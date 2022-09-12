@@ -5,6 +5,7 @@ import { path as ffmpegPath } from '@ffmpeg-installer/ffmpeg';
 import multer from "multer"
 import sharp from 'sharp'
 import { PassThrough } from 'node:stream';
+import { Sticker } from 'wa-sticker-formatter'
 
 ffmpeg.setFfmpegPath(ffmpegPath)
 
@@ -33,16 +34,32 @@ router.post('/webp', upload.single('file'), async function (req, res) {
         case "video/mp4":
             let fileStream = fs.createReadStream(req.file.path)
             let sticker = await stickerAnimated(fileStream, crop)
-            fs.writeFileSync((req.file.path + ".webp"), sticker)
-            res.download((req.file.path + ".webp"))
+            try {
+                await new Sticker(sticker)
+                    .setPack(pack)
+                    .setAuthor(autor)
+                    .toFileNoConvert((req.file.path + ".webp"))
+
+                res.download((req.file.path + ".webp"))
+            } catch (error) {
+                res.send(`error`)
+            }
             break;
 
         case "image/gif":
         case "image/png":
         case "image/jpeg":
             let webp = await toWebp(req.file.path, crop, req.file.path)
-            fs.writeFileSync((req.file.path + ".webp"), webp)
-            res.download((req.file.path + ".webp"))
+            try {
+                await new Sticker(webp)
+                    .setPack(pack)
+                    .setAuthor(autor)
+                    .toFileNoConvert((req.file.path + ".webp"))
+
+                res.download((req.file.path + ".webp"))
+            } catch (error) {
+                res.send(`error`)
+            }
             break;
 
         default:

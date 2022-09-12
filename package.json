@@ -10,7 +10,8 @@
     "express": "^4.17.1",
     "fluent-ffmpeg": "^2.1.2",
     "multer": "^1.4.5-lts.1",
-    "sharp": "^0.30.7"
+    "sharp": "^0.30.7",
+    "wa-sticker-formatter": "git+https://github.com/erickythierry/wa-sticker-formatter.git"
   },
   "scripts": {
     "start": "node index.js"
