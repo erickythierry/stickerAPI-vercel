@@ -12,7 +12,7 @@ ffmpeg.setFfmpegPath(ffmpegPath)
 
 const router = express.Router();
 
-const upload = multer({ dest: './publico/' });
+const upload = multer({ dest: '/tmp/' });
 
 const defaultAutor = 'T.bot Figurinhas'
 const defaultPack = 'bot.figurinhas.cf'
