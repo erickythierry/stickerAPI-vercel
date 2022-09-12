@@ -3,10 +3,8 @@ import express from 'express';
 import ffmpeg from 'fluent-ffmpeg';
 import { path as ffmpegPath } from '@ffmpeg-installer/ffmpeg';
 import multer from "multer"
-import { addMetadataToWebpBuffer, setMetadata } from 'wa-sticker-formatter';
 import sharp from 'sharp'
 import { PassThrough } from 'node:stream';
-import path from "path"
 
 ffmpeg.setFfmpegPath(ffmpegPath)
 
@@ -35,27 +33,16 @@ router.post('/webp', upload.single('file'), async function (req, res) {
         case "video/mp4":
             let fileStream = fs.createReadStream(req.file.path)
             let sticker = await stickerAnimated(fileStream, crop)
-            try {
-                let webpWithMetadata = await addMetadataToWebpBuffer(sticker, pack, autor)
-                fs.writeFileSync((req.file.path + ".webp"), webpWithMetadata)
-                res.download((req.file.path + ".webp"))
-            } catch (error) {
-                res.send(`error\n ${error}`)
-            }
+            fs.writeFileSync((req.file.path + ".webp"), sticker)
+            res.download((req.file.path + ".webp"))
             break;
 
         case "image/gif":
         case "image/png":
         case "image/jpeg":
             let webp = await toWebp(req.file.path, crop, req.file.path)
-            console.log(webp)
-            try {
-                let withMetadata = await setMetadata(pack, autor, webp)
-                fs.writeFileSync((req.file.path + ".webp"), withMetadata)
-                res.download((req.file.path + ".webp"))
-            } catch (error) {
-                res.send(`error\n ${error}`)
-            }
+            fs.writeFileSync((req.file.path + ".webp"), webp)
+            res.download((req.file.path + ".webp"))
             break;
 
         default:
