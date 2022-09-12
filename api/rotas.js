@@ -33,14 +33,15 @@ router.post('/webp', upload.single('file'), async function (req, res) {
     console.log(req.file)
     switch (req.file.mimetype) {
         case "video/mp4":
-            // let fileStream = fs.createReadStream(req.file.path)
-            // let sticker = await stickerAnimated(fileStream, crop)
-            // let webpWithMetadata = await addMetadataToWebpBuffer(sticker, pack, autor)
-            // fs.writeFileSync((req.file.path + ".webp"), webpWithMetadata)
             let fileStream = fs.createReadStream(req.file.path)
             let sticker = await stickerAnimated(fileStream, crop)
-            fs.writeFileSync((req.file.path + ".webp"), sticker)
-            res.download((req.file.path + ".webp"))
+            try {
+                let webpWithMetadata = await addMetadataToWebpBuffer(sticker, pack, autor)
+                fs.writeFileSync((req.file.path + ".webp"), webpWithMetadata)
+                res.download((req.file.path + ".webp"))
+            } catch (error) {
+                res.send(`error\n ${error}`)
+            }
             break;
 
         case "image/gif":
@@ -55,7 +56,6 @@ router.post('/webp', upload.single('file'), async function (req, res) {
             } catch (error) {
                 res.send(`error\n ${error}`)
             }
-
             break;
 
         default:
