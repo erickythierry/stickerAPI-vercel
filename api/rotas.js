@@ -33,10 +33,13 @@ router.post('/webp', upload.single('file'), async function (req, res) {
     console.log(req.file)
     switch (req.file.mimetype) {
         case "video/mp4":
+            // let fileStream = fs.createReadStream(req.file.path)
+            // let sticker = await stickerAnimated(fileStream, crop)
+            // let webpWithMetadata = await addMetadataToWebpBuffer(sticker, pack, autor)
+            // fs.writeFileSync((req.file.path + ".webp"), webpWithMetadata)
             let fileStream = fs.createReadStream(req.file.path)
             let sticker = await stickerAnimated(fileStream, crop)
-            let webpWithMetadata = await addMetadataToWebpBuffer(sticker, pack, autor)
-            fs.writeFileSync((req.file.path + ".webp"), webpWithMetadata)
+            fs.writeFileSync((req.file.path + ".webp"), sticker)
             res.download((req.file.path + ".webp"))
             break;
 
@@ -44,8 +47,9 @@ router.post('/webp', upload.single('file'), async function (req, res) {
         case "image/png":
         case "image/jpeg":
             let webp = await toWebp(req.file.path, crop, req.file.path)
-            let withMetadata = await setMetadata(pack, autor, webp)
-            fs.writeFileSync((req.file.path + ".webp"), withMetadata)
+            //let withMetadata = await setMetadata(pack, autor, webp)
+            //fs.writeFileSync((req.file.path + ".webp"), withMetadata)
+            fs.writeFileSync((req.file.path + ".webp"), webp)
             res.download((req.file.path + ".webp"))
             break;
 
