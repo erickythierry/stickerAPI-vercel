@@ -47,9 +47,8 @@ router.post('/webp', upload.single('file'), async function (req, res) {
         case "image/png":
         case "image/jpeg":
             let webp = await toWebp(req.file.path, crop, req.file.path)
-            //let withMetadata = await setMetadata(pack, autor, webp)
-            //fs.writeFileSync((req.file.path + ".webp"), withMetadata)
-            fs.writeFileSync((req.file.path + ".webp"), webp)
+            let withMetadata = await setMetadata(pack, autor, webp)
+            fs.writeFileSync((req.file.path + ".webp"), withMetadata)
             res.download((req.file.path + ".webp"))
             break;
 
